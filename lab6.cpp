@@ -86,36 +86,27 @@ void *barrera_condicional(void * arg)
 	//... 
 }
 
-struct parameters {
-	int id;
-	//string word;
-}
-
 string texto;
 int cont;
 int i;
 int conteoG;
-/*----- Variables globales compartidas -----*/
+/*----- Variables globa les compartidas -----*/
+
 
 void lectura();
+void escritura();
 
 int main()
 {
 	int j;
 	lectura();
-
+	escritura();
 	
 	system("pause");
 	return 0;
 }
 
 void lectura (){
-	int j; 
-	int k;
-	int h;
-	int contSec;
-	cont = 0;
-	conteoG = 0;
 	ifstream archivo;
 	archivo.open("FUENTE.txt", ios::in);
 	if (archivo.fail()){
@@ -127,6 +118,26 @@ void lectura (){
 		getline(archivo,texto);
 		cout<<texto<<endl;
 	}
+	archivo.close();
+}
+
+void escritura(){
+	int j; 
+	int k;
+	int h;
+	int contSec;
+	cont = 0;
+	conteoG = 0;
+
+	ofstream escribir("primos.txt", ios::out);
+
+	if (!escribir)
+	{
+		cerr << "Fail to create primos.txt" << endl;
+		exit(EXIT_FAILURE);
+	}
+
+
 	i = texto.size();
 	k = i % 8;
 	while (k != 8){
@@ -134,35 +145,62 @@ void lectura (){
 		cont ++;
 	}
 	h = i + cont;
-	cout<<k<<endl;
-	cout<<i<<endl;
+	//cout<<k<<endl;
+	//cout<<i<<endl;
 	cont = 0;
-	k = i / 8;
+	k = h / 8;
 	char palabra[h];
 	string palabraF;
+	int a;
 	for (j=0; j<h; j++)
 	{
 		if (j < i){
 			palabra[j] = texto[j];
-			cout<<palabra[j]<<endl;
+			a = int(palabra[j]);
+			//cout<<a<<endl;
 		}else{
-			palabra[j] = 8;
-			cout<<palabra[j]<<endl;
+			palabra[j] = 32;
+			//cout<<palabra[j]<<endl;
 		}
 	}
+	escribir<<palabra;
 	contSec = 2;
 	char acomodador[8];
-	while (cont!= 8){
-		if(contSec == 8){
-			contSec = 0;
+	char acomodador2[8];
+	while (conteoG != k){
+		while (cont!= 8){
+			if(contSec == 8){
+				contSec = 0;
+			}
+			acomodador[cont] = palabra[contSec];
+			//cout<<palabra[contSec]<<endl;
+			contSec ++;
+			cont ++;
 		}
-		acomodador[cont] = palabra[contSec];
-		cout<<palabra[contSec]<<endl;
-		contSec ++;
-		cont ++;
+		conteoG++;
+		escribir<<acomodador;
 	}
-	cout<<acomodador<<endl;
-	archivo.close();
+	//cout<<acomodador<<endl;
 
-	return 0;
+	//este es el que cambia los ascii sumando 7
+	cont = 0;
+	contSec = 2;
+	conteoG = 0;   
+	while (conteoG != k){
+		while (cont!= 8){
+			a = int(acomodador[cont]);
+			cout<<a<<endl;
+			a = a + 7;
+			cout<<a<<endl;
+			acomodador2[cont] = a; 
+			cont++;
+		}
+		conteoG++;
+		for (j=0; j<8; j++){
+		escribir<<acomodador2[j];
+		}
+	}
+	cout<< endl;
+	cout<<acomodador2<<endl;
+	escribir.close();
 }
